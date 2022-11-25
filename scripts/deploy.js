@@ -8,11 +8,15 @@ const hre = require("hardhat");
 
 async function main() {
 
+  const Lock = await hre.ethers.getContractFactory("Pool");
+  const lock = await Lock.deploy();
 
+  await lock.deployed();
 
-  console.log(`Lock with 1 ETH and unlock timestamp  deployed to `);
+  console.log(
+    `deployed to ${lock.address}`
+    );
 
-  
 }
 
 // We recommend this pattern to be able to use async/await everywhere

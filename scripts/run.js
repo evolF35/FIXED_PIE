@@ -6,12 +6,46 @@
 // You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
 // will compile your contracts, add the Hardhat Runtime Environment's members to the
 // global scope, and execute the script.
+const { ethers } = require("hardhat");
 const hre = require("hardhat");
+require("@nomiclabs/hardhat-web3");
+
+
 
 async function main() {
 
-  console.log(`Lock with 1 ETH and unlock timestamp  deployed to `);
+    const [owner, randomPerson] = await hre.ethers.getSigners();
+    const lockedAmount = hre.ethers.utils.parseEther("0.1");
+
+
+    const Lock = await hre.ethers.getContractFactory("Pool");
+    const lock = await Lock.deploy();    
+
+    await lock.deployed();
   
+    //let gsUsed = BigInt(lock.deployed().cumulativeGasUsed) * BigInt(lock.deployed().effectiveGasPrice);
+
+    //const gsUsed = BigInt(receipt.cumulativeGasUsed) * BigInt(receipt.effectiveGasPrice);
+
+    console.log(
+      `deployed to ${lock.address}`
+      );
+
+    contractBal = await hre.ethers.provider.getBalance(lock.address);
+    console.log(contractBal);
+
+    let txn1 = await lock.depositToPOS({value:lockedAmount});
+    let txn2 = await lock.depositToNEG({value:lockedAmount});
+
+    let receipt = await txn2.wait();
+    const gg =  BigInt(receipt.cumulativeGasUsed);
+    const gasUsed = BigInt(receipt.cumulativeGasUsed) * BigInt(receipt.effectiveGasPrice);
+
+    console.log(gg);
+
+    contractBal = await hre.ethers.provider.getBalance(lock.address);
+    console.log(contractBal);
+
 }
 
 // We recommend this pattern to be able to use async/await everywhere
