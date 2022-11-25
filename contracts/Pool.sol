@@ -58,7 +58,7 @@ contract Pool {
     useChainLink public oracle;
 
     constructor() {
-        settlementDate = block.timestamp + 10 seconds;
+        settlementDate = block.timestamp + 1 hours;
         positiveSide = new POS("ETHOVER");
         negativeSide = new NEG("ETHUNDER");
         condition = false;
