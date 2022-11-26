@@ -10,14 +10,13 @@ contract useChainLink {
     AggregatorV3Interface public priceFeed;
 
     constructor() {
-        priceFeed = AggregatorV3Interface(0x57241A37733983F97C4Ab06448F244A1E0Ca0ba8);
+        priceFeed = AggregatorV3Interface(0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e);
     }
 
     function getLatestPrice() public view returns (int){
         (,int price,,,) = priceFeed.latestRoundData();
         return(price);
     }
-
 }
 
 contract POS is ERC20, Ownable {
@@ -52,13 +51,41 @@ contract Pool {
     uint256 settlementDate;
     bool condition;
 
+    function getSettlementDate() public view returns (uint256){
+        return(settlementDate);
+    }
+
+    function getCondition() public view returns (bool){
+        return(condition);
+    }
+
+    function pastSettlementDate() public view returns (bool){
+        return(block.timestamp > settlementDate);
+    }
+
+    function changeSettlementDate() public {
+        settlementDate = block.timestamp - 1 hours;
+    }
+
+    function getAllowancePOS() public view returns(uint256){
+        return(positiveSide.allowance(msg.sender,address(this)));
+    }
+
+    function getAllowanceNEG() public view returns(uint256){
+        return(negativeSide.allowance(msg.sender,address(this)));
+    }
+
+    function changeCondition() public{
+        condition = true;
+    }
+
     POS public positiveSide;
     NEG public negativeSide;
 
     useChainLink public oracle;
 
     constructor() {
-        settlementDate = block.timestamp + 1 hours;
+        settlementDate = block.timestamp + 30 minutes;
         positiveSide = new POS("ETHOVER");
         negativeSide = new NEG("ETHUNDER");
         condition = false;
@@ -127,7 +154,14 @@ contract Pool {
 
         (payable(msg.sender)).transfer(saved);
  //       console.log(address(this).balance);
+    }
 
+    function approveWithPOS() public {
+        positiveSide.approve(address(this),positiveSide.balanceOf(msg.sender)-1);
+    }
+
+    function approveWithNEG() public {
+        negativeSide.approve(address(this),negativeSide.balanceOf(msg.sender)-1);
     }
 
 }

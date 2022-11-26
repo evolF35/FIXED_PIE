@@ -17,7 +17,6 @@ async function main() {
     const [owner, randomPerson] = await hre.ethers.getSigners();
     const lockedAmount = hre.ethers.utils.parseEther("0.1");
 
-
     const Lock = await hre.ethers.getContractFactory("Pool");
     const lock = await Lock.deploy();    
 
@@ -37,14 +36,28 @@ async function main() {
     let txn1 = await lock.depositToPOS({value:lockedAmount});
     let txn2 = await lock.depositToNEG({value:lockedAmount});
 
-    let receipt = await txn2.wait();
-    const gg =  BigInt(receipt.cumulativeGasUsed);
-    const gasUsed = BigInt(receipt.cumulativeGasUsed) * BigInt(receipt.effectiveGasPrice);
-
-    console.log(gg);
-
     contractBal = await hre.ethers.provider.getBalance(lock.address);
     console.log(contractBal);
+
+    let txn3 = await lock.depositToNEG({value:lockedAmount});
+    contractBal = await hre.ethers.provider.getBalance(lock.address);
+    console.log(contractBal);
+
+    let settle = await lock.pastSettlementDate();
+    console.log(settle);
+
+    await lock.changeSettlementDate();
+
+    settle = await lock.pastSettlementDate();
+    console.log(settle);
+
+    let pos = await lock.getAllowancePOS();
+    console.log(pos);
+
+    await lock.approveWithPOS();
+
+    pos = await lock.getAllowancePOS();
+    console.log(pos);
 
 }
 
