@@ -30,6 +30,8 @@ contract POS is ERC20, Ownable {
     function burn(uint256 amount) public {
         _burn(msg.sender,amount);
     }
+
+
 }
 
 contract NEG is ERC20, Ownable {
@@ -162,6 +164,14 @@ contract Pool {
 
     function approveWithNEG() public {
         negativeSide.approve(address(this),negativeSide.balanceOf(msg.sender)-1);
+    }
+
+    function increaseAllowancePOS() public {
+        positiveSide.increaseAllowance(address(this),1);
+    }
+
+    function increaseAllowanceNEG() public {
+
     }
 
 }
