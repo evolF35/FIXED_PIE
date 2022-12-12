@@ -158,22 +158,6 @@ contract Pool {
  //       console.log(address(this).balance);
     }
 
-    function approveWithPOS() public {
-        positiveSide.approve(address(this),positiveSide.balanceOf(msg.sender)-1);
-    }
-
-    function approveWithNEG() public {
-        negativeSide.approve(address(this),negativeSide.balanceOf(msg.sender)-1);
-    }
-
-    function increaseAllowancePOS() public {
-        positiveSide.increaseAllowance(address(this),1);
-    }
-
-    function increaseAllowanceNEG() public {
-
-    }
-
 }
 
 

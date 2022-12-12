@@ -6,6 +6,8 @@ require("@nomiclabs/hardhat-etherscan");
 require("@nomiclabs/hardhat-web3");
 
 require("hardhat-gas-reporter");
+require('hardhat-contract-sizer');
+
 
 
 const GoerliUrl =
